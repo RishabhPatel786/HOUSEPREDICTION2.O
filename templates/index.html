@@ -1,19 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>House Price Predictor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHouse AI | Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary-color: #4e73df; --secondary-color: #224abe; }
+        body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+        .navbar { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card { border: none; border-radius: 1rem; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .btn-predict { background: var(--primary-color); color: white; border-radius: 0.5rem; padding: 12px; font-weight: 600; }
+        .btn-predict:hover { background: var(--secondary-color); color: white; }
+        .header-gradient { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); color: white; padding: 80px 0; border-radius: 0 0 50px 50px; }
+    </style>
 </head>
 <body>
-    <h2>House Price Prediction</h2>
-    <form action="/predict" method="post">
-        <input type="text" name="income" placeholder="Avg Area Income" required>
-        <input type="text" name="age" placeholder="House Age" required>
-        <input type="text" name="rooms" placeholder="Number of Rooms" required>
-        <input type="text" name="bedrooms" placeholder="Number of Bedrooms" required>
-        <input type="text" name="pop" placeholder="Area Population" required>
-        <button type="submit">Predict Price</button>
-    </form>
-    <br>
-    <h3>{{ prediction_text }}</h3>
+
+<div class="header-gradient text-center mb-5">
+    <h1 class="display-4 fw-bold">SmartHouse AI 2.0</h1>
+    <p class="lead">Advanced Linear Regression for Real Estate Valuation</p>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg p-4 p-md-5">
+                <form action="/predict" method="post">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold"><i class="fas fa-wallet me-2 text-primary"></i>Avg. Area Income</label>
+                            <input type="number" step="any" name="income" class="form-control form-control-lg" placeholder="e.g. 75000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-calendar-alt me-2 text-primary"></i>House Age</label>
+                            <input type="number" step="any" name="age" class="form-control form-control-lg" placeholder="Years" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-door-open me-2 text-primary"></i>Total Rooms</label>
+                            <input type="number" step="any" name="rooms" class="form-control form-control-lg" placeholder="Total count" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-bed me-2 text-primary"></i>Bedrooms</label>
+                            <input type="number" step="any" name="bedrooms" class="form-control form-control-lg" placeholder="Total count" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-users me-2 text-primary"></i>Area Population</label>
+                            <input type="number" step="any" name="pop" class="form-control form-control-lg" placeholder="e.g. 30000" required>
+                        </div>
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-predict w-100 shadow-sm">Calculate Prediction</button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if prediction_text %}
+                <div class="mt-5 p-4 bg-light rounded-3 text-center border-start border-primary border-5">
+                    <h2 class="text-dark mb-0">{{ prediction_text }}</h2>
+                    <p class="text-muted small mt-2">Predicted using real-time Linear Regression analysis.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center mt-5 py-4 text-muted">
+    <p>Developed with <i class="fas fa-heart text-danger"></i> using Python & Flask</p>
+</footer>
+
 </body>
 </html>
