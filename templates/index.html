@@ -3,111 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BharatProperty AI | Smart Valuation</title>
+    <title>Bharat Estates AI | Real Estate Analytics</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
-        body { background: #0f172a; font-family: 'Plus Jakarta Sans', sans-serif; color: #f8fafc; min-height: 100vh; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-radius: 24px; color: #1e293b; border: none; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        .form-label { font-weight: 800; font-size: 0.7rem; color: #64748b; letter-spacing: 1px; }
-        .input-box { background: #f1f5f9; border: 2px solid transparent; border-radius: 12px; padding: 12px; font-weight: 600; }
-        .input-box:focus { border-color: #6366f1; background: #fff; box-shadow: none; }
-        .btn-predict { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white; border: none; border-radius: 15px; padding: 18px; font-weight: 700; transition: 0.3s; }
-        .btn-predict:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); color: white; }
-        .result-box { background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 20px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        :root { --primary: #6366f1; --dark: #0f172a; }
+        body { background: var(--dark); font-family: 'Plus Jakarta Sans', sans-serif; color: #f8fafc; overflow-x: hidden; }
+        
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-radius: 28px; color: #1e293b; border: none; }
+        .form-label { font-weight: 800; font-size: 0.7rem; color: #64748b; letter-spacing: 1px; text-transform: uppercase; }
+        .input-box { background: #f1f5f9; border: 2px solid transparent; border-radius: 14px; padding: 12px; font-weight: 600; }
+        .input-box:focus { border-color: var(--primary); background: #fff; box-shadow: none; }
+        
+        .btn-predict { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white; border: none; border-radius: 18px; padding: 18px; font-weight: 700; transition: 0.3s; }
+        .btn-predict:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5); color: white; }
+        
+        .valuation-badge { background: #f0fdf4; border: 2px solid #22c55e; border-radius: 20px; }
+        .table-dark { background: rgba(255,255,255,0.05) !important; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
 <div class="container py-5">
-    <nav class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
-        <div class="fw-bold fs-4" style="color: #818cf8;"><i class="fas fa-building-circle-check me-2"></i>BHARAT AI</div>
-        <span class="badge bg-primary rounded-pill px-3 py-2">Precision Model v3.2</span>
-    </nav>
+    <header class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
+        <div class="fw-bold fs-3 text-white"><i class="fas fa-microchip me-2 text-primary"></i>BHARAT ESTATES <span class="text-primary">AI</span></div>
+        <div class="small opacity-50">Market Intelligence Dashboard v4.0</div>
+    </header>
 
-    <div class="row g-5 justify-content-center">
+    <div class="row g-5">
         <div class="col-lg-7 animate__animated animate__fadeInLeft">
-            <div class="glass-card p-4 p-md-5">
-                <h2 class="fw-bold mb-4">Property Parameters</h2>
-                <form action="/predict" method="post" class="row g-4">
-                    
+            <div class="glass-card p-4 p-md-5 shadow-lg">
+                <h3 class="fw-bold mb-4">Property Specifications</h3>
+                <form action="/predict" method="post" id="predictForm" class="row g-4">
                     <div class="col-md-6">
-                        <label class="form-label text-uppercase">Total Area (Sq.Ft.)</label>
-                        <input type="number" name="area" class="input-box form-control" placeholder="1200" 
-                               value="{{ old_inputs.area if old_inputs.area else '' }}" required>
+                        <label class="form-label">Total Built-up Area (Sq.Ft.)</label>
+                        <input type="number" name="area" class="input-box form-control" value="{{ old_inputs.area if old_inputs.area else '' }}" placeholder="1200" required>
                     </div>
-
                     <div class="col-md-6">
-                        <label class="form-label text-uppercase">Location Category</label>
+                        <label class="form-label">Regional Location</label>
                         <select name="location" class="input-box form-select">
-                            <option value="City" {% if old_inputs.location == 'City' %}selected{% endif %}>Metropolitan (City)</option>
-                            <option value="Main_Road" {% if old_inputs.location == 'Main_Road' %}selected{% endif %}>On Main Road</option>
-                            <option value="Outskirts" {% if old_inputs.location == 'Outskirts' %}selected{% endif %}>Suburbs (Outskirts)</option>
-                            <option value="Village" {% if old_inputs.location == 'Village' %}selected{% endif %}>Rural (Village)</option>
+                            <option value="City" {% if old_inputs.location == 'City' %}selected{% endif %}>Metropolitan (Main City)</option>
+                            <option value="Main_Road" {% if old_inputs.location == 'Main_Road' %}selected{% endif %}>Commercial (Main Road)</option>
+                            <option value="Outskirts" {% if old_inputs.location == 'Outskirts' %}selected{% endif %}>Suburban (Outskirts)</option>
+                            <option value="Village" {% if old_inputs.location == 'Village' %}selected{% endif %}>Rural (Village Area)</option>
                         </select>
                     </div>
-
                     <div class="col-12">
-                        <label class="form-label text-uppercase">Construction Quality (1-5)</label>
-                        <input type="range" name="quality" class="form-range" min="1" max="5" step="1" 
-                               value="{{ old_inputs.quality if old_inputs.quality else '3' }}">
-                        <div class="d-flex justify-content-between small text-muted px-1">
+                        <label class="form-label">Construction Quality & Luxury Index</label>
+                        <input type="range" name="quality" class="form-range" min="1" max="5" step="1" value="{{ old_inputs.quality if old_inputs.quality else '3' }}">
+                        <div class="d-flex justify-content-between text-muted x-small fw-bold">
+                            <span>Basic</span>
                             <span>Standard</span>
-                            <span>Premium</span>
-                            <span>Luxury</span>
+                            <span>Ultra Luxury</span>
                         </div>
                     </div>
-
                     <div class="col-md-4 col-6">
-                        <label class="form-label text-uppercase">BHK</label>
-                        <input type="number" name="bhk" class="input-box form-control" 
-                               value="{{ old_inputs.bhk if old_inputs.bhk else '2' }}">
+                        <label class="form-label">BHK</label>
+                        <input type="number" name="bhk" class="input-box form-control" value="{{ old_inputs.bhk if old_inputs.bhk else '2' }}">
                     </div>
-
                     <div class="col-md-4 col-6">
-                        <label class="form-label text-uppercase">Age (Yrs)</label>
-                        <input type="number" name="age" class="input-box form-control" 
-                               value="{{ old_inputs.age if old_inputs.age else '0' }}">
+                        <label class="form-label">Age (Years)</label>
+                        <input type="number" name="age" class="input-box form-control" value="{{ old_inputs.age if old_inputs.age else '0' }}">
                     </div>
-
                     <div class="col-md-4 col-12">
-                        <label class="form-label text-uppercase">Bathrooms</label>
-                        <input type="number" name="bath" class="input-box form-control" 
-                               value="{{ old_inputs.bath if old_inputs.bath else '2' }}">
+                        <label class="form-label">Bathrooms</label>
+                        <input type="number" name="bath" class="input-box form-control" value="{{ old_inputs.bath if old_inputs.bath else '2' }}">
                     </div>
-
                     <div class="col-12 mt-5">
-                        <button type="submit" class="btn btn-predict w-100 shadow">GENERATE AI REPORT <i class="fas fa-bolt ms-2"></i></button>
+                        <button type="submit" class="btn btn-predict w-100 shadow" id="submitBtn">
+                            START AI ANALYSIS <i class="fas fa-wand-magic-sparkles ms-2"></i>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="col-lg-5 animate__animated animate__fadeInRight">
+        <div class="col-lg-5">
             {% if prediction_text %}
-            <div class="glass-card p-4 text-center h-100 d-flex flex-column justify-content-center border-start border-primary border-5">
-                <div class="result-box p-4 mb-4 animate__animated animate__pulse">
-                    <span class="small fw-bold text-success text-uppercase">Market Valuation</span>
-                    <h1 class="display-4 fw-bold text-dark my-2">{{ prediction_text }}</h1>
+            <div class="glass-card p-4 animate__animated animate__fadeInRight">
+                <div class="valuation-badge p-4 text-center mb-4">
+                    <span class="text-success fw-bold small text-uppercase">Market Valuation</span>
+                    <h1 class="display-5 fw-extrabold text-dark my-2">{{ prediction_text }}</h1>
                     <span class="badge bg-white text-primary border px-3 py-2 fw-bold">{{ per_sqft }}</span>
                 </div>
-                <div class="text-start p-3 bg-light rounded-4">
-                    <h6 class="fw-bold mb-3 small"><i class="fas fa-circle-info me-2 text-primary"></i>VALUATION LOGIC</h6>
-                    <p class="small text-muted mb-0">High-sensitivity adjustments applied for <strong>{{ location_name }}</strong>. Model state: Persistent.</p>
+
+                <div class="row g-2 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-4 text-center">
+                            <small class="text-muted d-block x-small fw-bold">TREND</small>
+                            <span class="text-success fw-bold"><i class="fas fa-arrow-trend-up me-1"></i>{{ trend }}</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-4 text-center">
+                            <small class="text-muted d-block x-small fw-bold">IMPACT</small>
+                            <span class="text-primary fw-bold">{{ quality_impact }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold mb-3 small text-muted"><i class="fas fa-map-location-dot me-2"></i>ESTIMATED REGIONAL SPREAD</h6>
+                <table class="table table-sm table-borderless small text-muted mb-4">
+                    <tr><td>Metropolitan Tier</td><td class="text-end text-dark fw-bold">₹{{ comp.city }}</td></tr>
+                    <tr><td>Rural/Village Tier</td><td class="text-end text-dark fw-bold">₹{{ comp.village }}</td></tr>
+                </table>
+
+                <div class="accordion accordion-flush" id="aiLogic">
+                    <div class="accordion-item bg-transparent">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed small fw-bold py-2 bg-light rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#logicContent">
+                                AI Valuation Methodology
+                            </button>
+                        </h2>
+                        <div id="logicContent" class="accordion-collapse collapse" data-bs-parent="#aiLogic">
+                            <div class="accordion-body x-small text-muted">
+                                This result was generated using <strong>Multiple Linear Regression</strong> with a weighted <code>Location_Tier</code> coefficient. Analysis considers built-up area and quality-adjusted cost per square foot for the {{ location_name }} region.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% else %}
             <div class="glass-card p-5 text-center h-100 d-flex flex-column justify-content-center opacity-75">
-                <i class="fas fa-microchip fa-4x mb-4 text-primary animate__animated animate__pulse animate__infinite"></i>
-                <h4 class="fw-bold">AI Engine Idle</h4>
-                <p class="text-muted small">Enter property specs to run the analysis. Values will remain saved for easy updating.</p>
+                <i class="fas fa-chart-line fa-4x mb-4 text-primary animate__animated animate__pulse animate__infinite"></i>
+                <h4 class="fw-bold">Awaiting Data</h4>
+                <p class="text-muted small">Input parameters to activate the Neural Engine. Your valuation report will appear here instantly.</p>
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('predictForm').onsubmit = function() {
+        let btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>CALCULATING MARKET VALUE...';
+        btn.classList.add('disabled');
+    };
+</script>
 
 </body>
 </html>

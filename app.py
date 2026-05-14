@@ -28,7 +28,6 @@ def format_inr(amount):
 
 @app.route('/')
 def home():
-    # Pass an empty dictionary on first load to avoid errors
     return render_template('index.html', old_inputs={})
 
 @app.route('/predict', methods=['POST'])
@@ -37,7 +36,7 @@ def predict():
         return render_template('index.html', prediction_text="Error: Model missing.", old_inputs={})
 
     try:
-        # 1. Capture Inputs to send back to HTML (prevents reset)
+        # 1. Capture Inputs
         inputs = {
             'area': request.form.get('area'),
             'bhk': request.form.get('bhk'),
@@ -47,38 +46,43 @@ def predict():
             'location': request.form.get('location')
         }
 
-        # 2. Map Location to Numeric Tier (Essential for City vs Village price gap)
+        # 2. Logic & Feature Engineering
         tier_map = {'City': 4, 'Main_Road': 3, 'Outskirts': 2, 'Village': 1}
         location_tier = tier_map.get(inputs['location'], 1)
-
-        # 3. Create DataFrame matching model columns exactly
+        
+        # 3. Predict using the 6 features trained in model.py
         input_data = pd.DataFrame([[
-            float(inputs['area']), 
-            float(inputs['bhk']), 
-            float(inputs['age']), 
-            float(inputs['bath']), 
-            location_tier, 
-            float(inputs['quality'])
+            float(inputs['area']), float(inputs['bhk']), float(inputs['age']), 
+            float(inputs['bath']), location_tier, float(inputs['quality'])
         ]], columns=['Area_SqFt', 'BHK', 'Age_Years', 'Bathrooms', 'Location_Tier', 'Quality_Score'])
 
-        # 4. Predict
-        prediction = model.predict(input_data)[0]
+        raw_prediction = model.predict(input_data)[0]
         
-        # 5. Logical Floor Calculation
-        base_rate = float(inputs['area']) * (1500 * location_tier)
-        final_val = max(prediction, base_rate)
+        # 4. Logical Floor (₹1800-₹5000/sqft base depending on tier)
+        base_rate = float(inputs['area']) * (1800 + (location_tier * 800))
+        final_val = max(raw_prediction, base_rate)
 
-        formatted_price = format_inr(final_val)
-        per_sqft = format_inr(final_val / float(inputs['area']))
+        # 5. Advanced Analytics for Dashboard
+        trend = "Bullish" if location_tier >= 3 else "Stable"
+        quality_impact = "Premium" if float(inputs['quality']) >= 4 else "Standard"
+        
+        # Comparative Estimates for Table
+        comp = {
+            'city': format_inr(final_val * (4/location_tier)),
+            'village': format_inr(final_val * (1/location_tier))
+        }
 
         return render_template('index.html', 
-                               prediction_text=f'₹{formatted_price}',
-                               per_sqft=f'₹{per_sqft}/sq.ft',
+                               prediction_text=f'₹{format_inr(final_val)}',
+                               per_sqft=f'₹{format_inr(final_val / float(inputs['area']))}/sq.ft',
                                location_name=inputs['location'].replace('_', ' '),
-                               old_inputs=inputs) # Sending inputs back
+                               trend=trend,
+                               quality_impact=quality_impact,
+                               comp=comp,
+                               old_inputs=inputs)
     except Exception as e:
         print(f"Error: {e}")
-        return render_template('index.html', prediction_text="Error in calculation", old_inputs={})
+        return render_template('index.html', prediction_text="Check Data", old_inputs={})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
