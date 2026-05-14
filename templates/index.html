@@ -3,178 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bharat Estates AI | Next-Gen Valuation</title>
-    
+    <title>BharatProperty AI Pro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
-        
-        :root {
-            --glass: rgba(255, 255, 255, 0.92);
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-            --dark-bg: #0f172a;
-        }
-
-        body { 
-            background-color: var(--dark-bg);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: #f8fafc;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Decorative background elements */
-        .bg-glow {
-            position: fixed;
-            top: 0; right: 0;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, rgba(15,23,42,0) 70%);
-            z-index: -1;
-        }
-
-        .hero-header {
-            padding: 60px 0 100px;
-            text-align: center;
-        }
-
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #1e293b;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-        }
-
-        .input-field {
-            background: #f1f5f9;
-            border: 2px solid transparent;
-            border-radius: 14px;
-            padding: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            background: #fff;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .label-style {
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #64748b;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .btn-predict {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 15px -3px rgba(67, 56, 202, 0.3);
-        }
-
-        .btn-predict:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 25px -5px rgba(67, 56, 202, 0.4);
-            color: white;
-        }
-
-        .result-container {
-            background: #f0fdf4;
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid #bbf7d0;
-        }
-
-        .valuation-text {
-            color: #15803d;
-            font-weight: 800;
-            font-size: 2.5rem;
-        }
-
-        .insight-pill {
-            background: #eef2ff;
-            color: #4338ca;
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+        body { background: #0f172a; font-family: 'Plus Jakarta Sans', sans-serif; color: #f8fafc; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-radius: 24px; color: #1e293b; border: none; }
+        .form-label { font-weight: 800; font-size: 0.7rem; color: #64748b; letter-spacing: 1px; }
+        .input-box { background: #f1f5f9; border: none; border-radius: 12px; padding: 12px; font-weight: 600; }
+        .btn-predict { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white; border: none; border-radius: 15px; padding: 16px; font-weight: 700; transition: 0.3s; }
+        .btn-predict:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4); color: white; }
+        .price-text { color: #15803d; font-weight: 800; }
+        .quality-slider::-webkit-slider-runnable-track { background: #e2e8f0; height: 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-<div class="bg-glow"></div>
-
 <div class="container py-5">
     <nav class="d-flex justify-content-between align-items-center mb-5 animate__animated animate__fadeInDown">
-        <div class="nav-logo">
-            <i class="fas fa-city me-2"></i>BHARAT PROPERTY AI
-        </div>
-        <div class="d-none d-md-block">
-            <span class="badge bg-primary rounded-pill px-3 py-2">ML Engine v2.5</span>
-        </div>
+        <div class="fw-bold fs-4" style="color: #818cf8;"><i class="fas fa-microchip me-2"></i>BHARAT AI</div>
+        <span class="badge bg-dark border border-secondary px-3 py-2">Property Analytics v3.0</span>
     </nav>
 
-    <div class="row g-5 align-items-start">
+    <div class="row g-5">
         <div class="col-lg-7 animate__animated animate__fadeInLeft">
             <div class="glass-card p-4 p-md-5">
-                <h2 class="fw-extrabold mb-4">Property Valuation</h2>
-                <form action="/predict" method="post">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="label-style">TOTAL AREA (SQ.FT.)</label>
-                            <input type="number" name="area" class="form-control input-field" placeholder="1200" required>
+                <h2 class="fw-bold mb-4 text-dark">Valuation Engine</h2>
+                <form action="/predict" method="post" class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label">TOTAL AREA (SQ.FT.)</label>
+                        <input type="number" name="area" class="input-box form-control" placeholder="1200" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">LOCATION CATEGORY</label>
+                        <select name="location" class="input-box form-select">
+                            <option value="City">Metropolitan City (Tier 4)</option>
+                            <option value="Main_Road">On Main Road (Tier 3)</option>
+                            <option value="Outskirts">Outskirts (Tier 2)</option>
+                            <option value="Village">Village/Rural (Tier 1)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">CONSTRUCTION QUALITY & LUXURY</label>
+                        <input type="range" name="quality" class="form-range quality-slider" min="1" max="5" step="1" value="3">
+                        <div class="d-flex justify-content-between small text-muted px-1">
+                            <span>Basic</span>
+                            <span>Standard</span>
+                            <span>Luxury</span>
                         </div>
-                        <div class="col-md-6">
-                            <label class="label-style">LOCATION TIER</label>
-                            <select name="location" class="form-select input-field">
-                                <option value="City">Metropolitan (City)</option>
-                                <option value="Main_Road">On Main Road</option>
-                                <option value="Outskirts">Suburban (Outskirts)</option>
-                                <option value="Village">Rural (Village)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <label class="label-style">BHK</label>
-                            <input type="number" name="bhk" class="form-control input-field" value="2">
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <label class="label-style">AGE (YRS)</label>
-                            <input type="number" name="age" class="form-control input-field" value="0">
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <label class="label-style">BATHS</label>
-                            <input type="number" name="bath" class="form-control input-field" value="2">
-                        </div>
-                        <div class="col-12 mt-5">
-                            <button type="submit" class="btn btn-predict w-100">
-                                Analyze Market Price <i class="fas fa-bolt ms-2"></i>
-                            </button>
-                        </div>
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <label class="form-label">BHK</label>
+                        <input type="number" name="bhk" class="input-box form-control" value="2">
+                    </div>
+                    <div class="col-md-4 col-6">
+                        <label class="form-label">AGE (YRS)</label>
+                        <input type="number" name="age" class="input-box form-control" value="0">
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <label class="form-label">BATHROOMS</label>
+                        <input type="number" name="bath" class="input-box form-control" value="2">
+                    </div>
+                    <div class="col-12 mt-5">
+                        <button type="submit" class="btn btn-predict w-100 shadow">GET MARKET ESTIMATE <i class="fas fa-chevron-right ms-2"></i></button>
                     </div>
                 </form>
             </div>
@@ -182,40 +75,27 @@
 
         <div class="col-lg-5 animate__animated animate__fadeInRight">
             {% if prediction_text %}
-            <div class="glass-card p-4 text-center">
-                <div class="result-container animate__animated animate__zoomIn">
-                    <span class="label-style text-success">ESTIMATED VALUATION</span>
-                    <h1 class="valuation-text my-2">{{ prediction_text }}</h1>
-                    <div class="insight-pill mt-2">
-                        <i class="fas fa-chart-line me-2"></i>{{ per_sqft }}
-                    </div>
+            <div class="glass-card p-4 text-center h-100 d-flex flex-column justify-content-center">
+                <div class="p-4 rounded-4" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                    <span class="small fw-bold text-success text-uppercase">Valuation Result</span>
+                    <h1 class="display-5 fw-bold price-text my-2">{{ prediction_text }}</h1>
+                    <span class="badge bg-white text-primary border px-3 py-2">{{ per_sqft }}</span>
                 </div>
-
-                <div class="mt-4 text-start p-3 bg-light rounded-4">
-                    <h6 class="fw-bold mb-3 small"><i class="fas fa-microchip me-2 text-primary"></i>AI INSIGHTS</h6>
-                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem; color: #64748b;">
-                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i>Location: <strong>{{ location_name }}</strong> adjusted weighting applied.</li>
-                        <li class="mb-2"><i class="fas fa-circle-check text-success me-2"></i>Configuration: <strong>{{ bhk }} BHK</strong> verified.</li>
-                        <li><i class="fas fa-circle-check text-success me-2"></i>System confidence at <strong>97.4%</strong>.</li>
-                    </ul>
+                <div class="mt-4 p-3 bg-light rounded-4 text-start">
+                    <h6 class="fw-bold mb-2 small text-dark"><i class="fas fa-chart-line me-2"></i>LOCATION ANALYSIS</h6>
+                    <p class="small text-muted mb-0">High precision adjustment applied for <strong>{{ location_name }}</strong> region dynamics.</p>
                 </div>
             </div>
             {% else %}
-            <div class="glass-card p-5 text-center opacity-75">
-                <div class="mb-4">
-                    <i class="fas fa-house-laptop fa-4x text-primary animate__animated animate__pulse animate__infinite"></i>
-                </div>
+            <div class="glass-card p-5 text-center h-100 d-flex flex-column justify-content-center opacity-75">
+                <i class="fas fa-house-circle-check fa-4x mb-4 text-primary"></i>
                 <h4 class="fw-bold">Ready to Predict</h4>
-                <p class="small text-muted">Please input the property dimensions and location to generate a real-time AI valuation report.</p>
+                <p class="text-muted small">Enter property specs to run the Linear Regression model localized for Indian markets.</p>
             </div>
             {% endif %}
         </div>
     </div>
 </div>
-
-<footer class="container text-center py-5 opacity-50">
-    <small>Developed by CS Team | © 2026 Bharat Property AI</small>
-</footer>
 
 </body>
 </html>

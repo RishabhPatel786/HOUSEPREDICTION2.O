@@ -6,18 +6,17 @@ import os
 
 app = Flask(__name__)
 
-# Load model data with a safety fallback
-model_data_path = 'model_data.pkl'
+# Load model data
+model_path = 'model_data.pkl'
 model, model_columns = None, []
 
-if os.path.exists(model_data_path):
-    with open(model_data_path, 'rb') as f:
+if os.path.exists(model_path):
+    with open(model_path, 'rb') as f:
         data = pickle.load(f)
         model = data['model']
         model_columns = data['columns']
 
 def format_inr(amount):
-    """Indian Currency Formatting (Lakhs/Crores)"""
     amount = max(0, round(amount))
     s = str(amount)
     if len(s) <= 3: return s
@@ -33,46 +32,41 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     if not model:
-        return render_template('index.html', prediction_text="Error: Model not found.")
+        return render_template('index.html', prediction_text="Error: Model missing.")
 
     try:
-        # Get and sanitize inputs
-        area = float(request.form.get('area', 0))
-        bhk = float(request.form.get('bhk', 0))
-        age = float(request.form.get('age', 0))
-        bath = float(request.form.get('bath', 0))
-        location = request.form.get('location', 'City')
+        # 1. Capture Inputs
+        area = float(request.form.get('area'))
+        bhk = float(request.form.get('bhk'))
+        age = float(request.form.get('age'))
+        bath = float(request.form.get('bath'))
+        quality = float(request.form.get('quality')) # Range 1-5
+        location = request.form.get('location')
 
-        # Logic: Area must be > 0
-        if area <= 0:
-            return render_template('index.html', prediction_text="Error: Area must be greater than 0.")
+        # 2. Map Location to Numeric Tier (Feature Engineering)
+        # Higher tier = Higher base price multiplier
+        tier_map = {'City': 4, 'Main_Road': 3, 'Outskirts': 2, 'Village': 1}
+        location_tier = tier_map.get(location, 1)
 
-        # Build feature vector
-        input_df = pd.DataFrame(np.zeros((1, len(model_columns))), columns=model_columns)
-        input_df['Area_SqFt'] = area
-        input_df['BHK'] = bhk
-        input_df['Age_Years'] = age
-        input_df['Bathrooms'] = bath
+        # 3. Create DataFrame matching model columns
+        # Note: Your model.py should be trained on: Area_SqFt, BHK, Age_Years, Bathrooms, Location_Tier, Quality_Score
+        input_data = pd.DataFrame([[area, bhk, age, bath, location_tier, quality]], 
+                                  columns=['Area_SqFt', 'BHK', 'Age_Years', 'Bathrooms', 'Location_Tier', 'Quality_Score'])
+
+        # 4. Predict
+        prediction = model.predict(input_data)[0]
         
-        loc_col = f'Location_{location}'
-        if loc_col in model_columns:
-            input_df[loc_col] = 1
-
-        # Predict
-        prediction = model.predict(input_df)[0]
-        
-        # Calculate Per Sq. Ft. Rate
-        per_sqft = prediction / area
+        # 5. Logical Floor: Ensures price is never unrealistically low for a City
+        base_rate = area * (1000 * location_tier) # Minimum ₹1000/sqft for Village, ₹4000 for City
+        final_val = max(prediction, base_rate)
 
         return render_template('index.html', 
-                               prediction_text=f'₹{format_inr(prediction)}',
-                               per_sqft=f'₹{format_inr(per_sqft)}/sq.ft',
+                               prediction_text=f'₹{format_inr(final_val)}',
+                               per_sqft=f'₹{format_inr(final_val/area)}/sq.ft',
                                location_name=location.replace('_', ' '),
                                area=area, bhk=int(bhk))
-
     except Exception as e:
-        print(f"Error: {e}")
-        return render_template('index.html', prediction_text="Something went wrong. Please check inputs.")
+        return render_template('index.html', prediction_text="Calculation Error")
 
 if __name__ == "__main__":
     app.run(debug=True)
