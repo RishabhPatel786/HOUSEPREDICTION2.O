@@ -17,6 +17,7 @@ if os.path.exists(model_path):
         model_columns = data['columns']
 
 def format_inr(amount):
+    """Formats number to Indian numbering system (Lakhs/Crores)"""
     amount = max(0, round(amount))
     s = str(amount)
     if len(s) <= 3: return s
@@ -27,46 +28,58 @@ def format_inr(amount):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # Pass an empty dictionary on first load to avoid errors
+    return render_template('index.html', old_inputs={})
 
 @app.route('/predict', methods=['POST'])
 def predict():
     if not model:
-        return render_template('index.html', prediction_text="Error: Model missing.")
+        return render_template('index.html', prediction_text="Error: Model missing.", old_inputs={})
 
     try:
-        # 1. Capture Inputs
-        area = float(request.form.get('area'))
-        bhk = float(request.form.get('bhk'))
-        age = float(request.form.get('age'))
-        bath = float(request.form.get('bath'))
-        quality = float(request.form.get('quality')) # Range 1-5
-        location = request.form.get('location')
+        # 1. Capture Inputs to send back to HTML (prevents reset)
+        inputs = {
+            'area': request.form.get('area'),
+            'bhk': request.form.get('bhk'),
+            'age': request.form.get('age'),
+            'bath': request.form.get('bath'),
+            'quality': request.form.get('quality'),
+            'location': request.form.get('location')
+        }
 
-        # 2. Map Location to Numeric Tier (Feature Engineering)
-        # Higher tier = Higher base price multiplier
+        # 2. Map Location to Numeric Tier (Essential for City vs Village price gap)
         tier_map = {'City': 4, 'Main_Road': 3, 'Outskirts': 2, 'Village': 1}
-        location_tier = tier_map.get(location, 1)
+        location_tier = tier_map.get(inputs['location'], 1)
 
-        # 3. Create DataFrame matching model columns
-        # Note: Your model.py should be trained on: Area_SqFt, BHK, Age_Years, Bathrooms, Location_Tier, Quality_Score
-        input_data = pd.DataFrame([[area, bhk, age, bath, location_tier, quality]], 
-                                  columns=['Area_SqFt', 'BHK', 'Age_Years', 'Bathrooms', 'Location_Tier', 'Quality_Score'])
+        # 3. Create DataFrame matching model columns exactly
+        input_data = pd.DataFrame([[
+            float(inputs['area']), 
+            float(inputs['bhk']), 
+            float(inputs['age']), 
+            float(inputs['bath']), 
+            location_tier, 
+            float(inputs['quality'])
+        ]], columns=['Area_SqFt', 'BHK', 'Age_Years', 'Bathrooms', 'Location_Tier', 'Quality_Score'])
 
         # 4. Predict
         prediction = model.predict(input_data)[0]
         
-        # 5. Logical Floor: Ensures price is never unrealistically low for a City
-        base_rate = area * (1000 * location_tier) # Minimum ₹1000/sqft for Village, ₹4000 for City
+        # 5. Logical Floor Calculation
+        base_rate = float(inputs['area']) * (1500 * location_tier)
         final_val = max(prediction, base_rate)
 
+        formatted_price = format_inr(final_val)
+        per_sqft = format_inr(final_val / float(inputs['area']))
+
         return render_template('index.html', 
-                               prediction_text=f'₹{format_inr(final_val)}',
-                               per_sqft=f'₹{format_inr(final_val/area)}/sq.ft',
-                               location_name=location.replace('_', ' '),
-                               area=area, bhk=int(bhk))
+                               prediction_text=f'₹{formatted_price}',
+                               per_sqft=f'₹{per_sqft}/sq.ft',
+                               location_name=inputs['location'].replace('_', ' '),
+                               old_inputs=inputs) # Sending inputs back
     except Exception as e:
-        return render_template('index.html', prediction_text="Calculation Error")
+        print(f"Error: {e}")
+        return render_template('index.html', prediction_text="Error in calculation", old_inputs={})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
