@@ -5,11 +5,19 @@ import os
 
 app = Flask(__name__)
 
-# Load the saved model with a safety check
 model_path = 'model.pkl'
 model = None
 if os.path.exists(model_path):
     model = pickle.load(open(model_path, 'rb'))
+
+def format_indian_currency(amount):
+    """Formats number to Indian numbering system (Lakhs/Crores)"""
+    s = str(int(amount))
+    if len(s) <= 3: return s
+    last_three = s[-3:]
+    remaining = s[:-3]
+    remaining = ",".join([remaining[max(i-2, 0):i] for i in range(len(remaining), 0, -2)][::-1])
+    return f"{remaining},{last_three}"
 
 @app.route('/')
 def home():
@@ -18,20 +26,19 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
-        return render_template('index.html', prediction_text="Error: Model file not found on server.")
+        return render_template('index.html', prediction_text="Error: Model file missing.")
     
     try:
-        # Get data from form and convert to float
         features = [float(x) for x in request.form.values()]
-        final_features = [np.array(features)]
+        prediction = model.predict([np.array(features)])
         
-        prediction = model.predict(final_features)
-        # Format as currency: $1,234,567.89
-        output = "{:,.2f}".format(prediction[0])
+        # Format the result in Indian Rupees
+        formatted_price = format_indian_currency(prediction[0])
 
-        return render_template('index.html', prediction_text=f'Estimated Value: ${output}')
+        return render_template('index.html', 
+                               prediction_text=f'Estimated Value: ₹{formatted_price}')
     except Exception as e:
-        return render_template('index.html', prediction_text="Error: Please check your input values.")
+        return render_template('index.html', prediction_text="Error: Check your inputs.")
 
 if __name__ == "__main__":
     app.run(debug=True)

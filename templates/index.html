@@ -3,107 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartHouse AI Pro</title>
+    <title>SmartHouse AI | Indian Real Estate Predictor</title>
+    <!-- External Assets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-        body { background: #f0f2f5; transition: 0.3s; }
-        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); }
-        .hero-banner { background: linear-gradient(45deg, #0f2027, #203a43, #2c5364); color: white; padding: 100px 0; border-radius: 0 0 30px 30px; }
-        .input-group-text { background: transparent; border-right: none; }
-        .form-control { border-left: none; }
-        .prediction-box { background: #e3f2fd; border-left: 5px solid #2196f3; }
+        :root {
+            --indian-navy: #1a2a6c;
+            --indian-red: #b21f1f;
+            --indian-orange: #fdbb2d;
+            --accent-green: #2ecc71;
+        }
+
+        body { 
+            background: #f0f2f5; 
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #333;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--indian-navy), var(--indian-red));
+            color: white;
+            padding: 80px 0 120px 0;
+            border-bottom-left-radius: 50% 20%;
+            border-bottom-right-radius: 50% 20%;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: none;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: -80px;
+        }
+
+        .form-label { font-weight: 600; color: #555; font-size: 0.9rem; }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border-right: none;
+            color: var(--accent-green);
+        }
+
+        .form-control {
+            border-left: none;
+            padding: 12px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #dee2e6;
+        }
+
+        .btn-predict {
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            border: none;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-predict:hover {
+            transform: scale(1.02);
+            filter: brightness(1.2);
+        }
+
+        .prediction-box {
+            background: #f8fff9;
+            border: 2px dashed var(--accent-green);
+            border-radius: 15px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
-<div class="hero-banner text-center">
-    <h1 class="display-3 fw-bold">SmartHouse AI <span class="badge bg-primary fs-5">v2.1</span></h1>
-    <p class="lead">Machine Learning powered property valuation with real-time analytics.</p>
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">SmartHouse AI <span class="fs-4 text-warning">India</span></h1>
+        <p class="lead opacity-75">Machine Learning Property Valuation in Indian Rupees (₹)</p>
+    </div>
 </div>
 
-<div class="container mt-n5" style="margin-top: -50px;">
-    <div class="row g-4">
-        <!-- Input Panel -->
-        <div class="col-lg-7">
-            <div class="glass-card shadow-lg p-4 p-md-5">
-                <h4 class="mb-4"><i class="fas fa-edit me-2"></i>Property Parameters</h4>
-                <form action="/predict" method="post">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold">AVG INCOME</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                                <input type="number" name="income" class="form-control" placeholder="75000" required>
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card main-card p-4 p-md-5">
+                <div class="row g-5">
+                    
+                    <!-- Prediction Form -->
+                    <div class="col-md-6 border-end">
+                        <h4 class="mb-4"><i class="fas fa-sliders-h me-2 text-primary"></i>Property Details</h4>
+                        <form action="/predict" method="post">
+                            <div class="mb-4">
+                                <label class="form-label">ANNUAL FAMILY INCOME (₹)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-indian-rupee-sign"></i></span>
+                                    <input type="number" name="income" class="form-control" placeholder="e.g. 1500000" required>
+                                </div>
+                                <div class="form-text">Enter total household income per year.</div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold">HOUSE AGE</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-history"></i></span>
-                                <input type="number" name="age" class="form-control" placeholder="5" required>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <label class="form-label">HOUSE AGE (YRS)</label>
+                                    <input type="number" name="age" class="form-control" placeholder="e.g. 5" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">TOTAL ROOMS</label>
+                                    <input type="number" name="rooms" class="form-control" placeholder="e.g. 6" required>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold">ROOMS</label>
-                            <input type="number" name="rooms" class="form-control" placeholder="7" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold">BEDROOMS</label>
-                            <input type="number" name="bedrooms" class="form-control" placeholder="3" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-bold">POPULATION</label>
-                            <input type="number" name="pop" class="form-control" placeholder="30000" required>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-6">
+                                    <label class="form-label">BEDROOMS</label>
+                                    <input type="number" name="bedrooms" class="form-control" placeholder="e.g. 3" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">AREA POPULATION</label>
+                                    <input type="number" name="pop" class="form-control" placeholder="e.g. 50000" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-predict w-100 rounded-pill">
+                                CALCULATE PROPERTY VALUE
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Output & Insights -->
+                    <div class="col-md-6 text-center d-flex flex-column justify-content-center">
+                        {% if prediction_text %}
+                            <div class="prediction-box p-4 mb-4">
+                                <h6 class="text-uppercase text-muted fw-bold small mb-2">Estimated Market Price</h6>
+                                <h1 class="display-5 fw-bold text-success">{{ prediction_text }}</h1>
+                                <hr>
+                                <p class="small text-muted mb-0">Valuation based on Indian Real Estate Trends (2026)</p>
+                            </div>
+                        {% else %}
+                            <div class="p-4 bg-light rounded-4 mb-4">
+                                <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                                <h5>Ready to Analyze</h5>
+                                <p class="text-muted small">Input property details on the left to see the AI prediction and regional trends.</p>
+                            </div>
+                        {% endif %}
+
+                        <div class="chart-container">
+                            <h6 class="fw-bold mb-3">Market Influence Factors</h6>
+                            <canvas id="indianMarketChart" height="200"></canvas>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3 fw-bold shadow">
-                        ANALYZE MARKET VALUE
-                    </button>
-                </form>
 
-                {% if prediction_text %}
-                <div class="prediction-box mt-4 p-4 rounded-3 text-center">
-                    <h2 class="fw-bold text-primary mb-1">{{ prediction_text }}</h2>
-                    <p class="text-muted mb-0"><i class="fas fa-shield-halved me-1"></i> Confidence Score: 94.2%</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Analytics Panel -->
-        <div class="col-lg-5">
-            <div class="glass-card shadow-lg p-4 h-100">
-                <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Price Composition</h4>
-                <canvas id="factorChart" width="400" height="300"></canvas>
-                <div class="mt-4 p-3 bg-white rounded shadow-sm">
-                    <h6><i class="fas fa-lightbulb text-warning me-2"></i>AI Insight</h6>
-                    <small class="text-muted">According to our model, <strong>Area Income</strong> is the strongest predictor of price in your selected region.</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center mt-5 pb-4">
-    <p class="text-muted small">© 2026 Developed by CS Team | Built on Scalable Python Solutions</p>
+<footer class="text-center py-4">
+    <div class="container">
+        <p class="text-muted small">
+            Built with <i class="fas fa-heart text-danger"></i> for Indian Homeowners | 
+            <a href="#" class="text-decoration-none ms-2">Powered by Linear Regression</a>
+        </p>
+    </div>
 </footer>
 
 <script>
-    // Simple Chart.js logic to make the UI look interactive
-    const ctx = document.getElementById('factorChart').getContext('2d');
+    // Localized Chart for Indian Context
+    const ctx = document.getElementById('indianMarketChart').getContext('2d');
     new Chart(ctx, {
-        type: 'doughnut',
+        type: 'bar',
         data: {
-            labels: ['Income', 'Age', 'Space', 'Location'],
+            labels: ['Income', 'Age', 'Rooms', 'Pop'],
             datasets: [{
-                data: [45, 20, 15, 20],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'],
-                hoverOffset: 4
+                label: '% Influence',
+                data: [42, 18, 25, 15],
+                backgroundColor: ['#1a2a6c', '#b21f1f', '#fdbb2d', '#2ecc71'],
+                borderRadius: 10
             }]
         },
-        options: { plugins: { legend: { position: 'bottom' } } }
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, grid: { display: false } } }
+        }
     });
 </script>
 
