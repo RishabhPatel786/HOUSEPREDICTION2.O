@@ -3,205 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartHouse AI | Indian Real Estate Predictor</title>
-    <!-- External Assets -->
+    <title>BharatProperty AI | Valuation Tool</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
     <style>
-        :root {
-            --indian-navy: #1a2a6c;
-            --indian-red: #b21f1f;
-            --indian-orange: #fdbb2d;
-            --accent-green: #2ecc71;
-        }
-
-        body { 
-            background: #f0f2f5; 
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            color: #333;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, var(--indian-navy), var(--indian-red));
-            color: white;
-            padding: 80px 0 120px 0;
-            border-bottom-left-radius: 50% 20%;
-            border-bottom-right-radius: 50% 20%;
-        }
-
-        .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            border: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            margin-top: -80px;
-        }
-
-        .form-label { font-weight: 600; color: #555; font-size: 0.9rem; }
-
-        .input-group-text {
-            background-color: #f8f9fa;
-            border-right: none;
-            color: var(--accent-green);
-        }
-
-        .form-control {
-            border-left: none;
-            padding: 12px;
-        }
-
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #dee2e6;
-        }
-
-        .btn-predict {
-            background: linear-gradient(to right, #1a2a6c, #b21f1f);
-            border: none;
-            color: white;
-            padding: 15px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            transition: 0.3s;
-        }
-
-        .btn-predict:hover {
-            transform: scale(1.02);
-            filter: brightness(1.2);
-        }
-
-        .prediction-box {
-            background: #f8fff9;
-            border: 2px dashed var(--accent-green);
-            border-radius: 15px;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
+        :root { --main-blue: #1e3a8a; --accent-gold: #f59e0b; }
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .hero-banner { background: var(--main-blue); color: white; padding: 60px 0 100px; border-radius: 0 0 40px 40px; }
+        .property-card { background: white; border-radius: 20px; border: none; margin-top: -60px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .form-control, .form-select { border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0; }
+        .btn-calculate { background: var(--accent-gold); color: white; border: none; font-weight: 700; padding: 15px; border-radius: 12px; transition: 0.3s; }
+        .btn-calculate:hover { background: #d97706; transform: translateY(-2px); }
+        .result-display { background: #f0fdf4; border: 2px solid #bbf7d0; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-<div class="hero-section text-center">
-    <div class="container">
-        <h1 class="display-4 fw-bold">SmartHouse AI <span class="fs-4 text-warning">India</span></h1>
-        <p class="lead opacity-75">Machine Learning Property Valuation in Indian Rupees (₹)</p>
-    </div>
+<div class="hero-banner text-center">
+    <h1 class="fw-bold">BharatProperty AI <i class="fas fa-gem text-warning"></i></h1>
+    <p class="opacity-75">Professional Real Estate Valuation based on Physical Property Data</p>
 </div>
 
 <div class="container mb-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card main-card p-4 p-md-5">
-                <div class="row g-5">
-                    
-                    <!-- Prediction Form -->
-                    <div class="col-md-6 border-end">
-                        <h4 class="mb-4"><i class="fas fa-sliders-h me-2 text-primary"></i>Property Details</h4>
-                        <form action="/predict" method="post">
-                            <div class="mb-4">
-                                <label class="form-label">ANNUAL FAMILY INCOME (₹)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-indian-rupee-sign"></i></span>
-                                    <input type="number" name="income" class="form-control" placeholder="e.g. 1500000" required>
-                                </div>
-                                <div class="form-text">Enter total household income per year.</div>
-                            </div>
-
-                            <div class="row g-3 mb-4">
-                                <div class="col-6">
-                                    <label class="form-label">HOUSE AGE (YRS)</label>
-                                    <input type="number" name="age" class="form-control" placeholder="e.g. 5" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">TOTAL ROOMS</label>
-                                    <input type="number" name="rooms" class="form-control" placeholder="e.g. 6" required>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mb-4">
-                                <div class="col-6">
-                                    <label class="form-label">BEDROOMS</label>
-                                    <input type="number" name="bedrooms" class="form-control" placeholder="e.g. 3" required>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">AREA POPULATION</label>
-                                    <input type="number" name="pop" class="form-control" placeholder="e.g. 50000" required>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-predict w-100 rounded-pill">
-                                CALCULATE PROPERTY VALUE
-                            </button>
-                        </form>
+        <div class="col-lg-9">
+            <div class="card property-card p-4 p-md-5">
+                <form action="/predict" method="post" class="row g-4">
+                    <div class="col-md-12">
+                        <h4 class="mb-3 text-dark fw-bold"><i class="fas fa-building me-2 text-primary"></i>Enter Property Specs</h4>
                     </div>
 
-                    <!-- Output & Insights -->
-                    <div class="col-md-6 text-center d-flex flex-column justify-content-center">
-                        {% if prediction_text %}
-                            <div class="prediction-box p-4 mb-4">
-                                <h6 class="text-uppercase text-muted fw-bold small mb-2">Estimated Market Price</h6>
-                                <h1 class="display-5 fw-bold text-success">{{ prediction_text }}</h1>
-                                <hr>
-                                <p class="small text-muted mb-0">Valuation based on Indian Real Estate Trends (2026)</p>
-                            </div>
-                        {% else %}
-                            <div class="p-4 bg-light rounded-4 mb-4">
-                                <i class="fas fa-robot fa-3x text-muted mb-3"></i>
-                                <h5>Ready to Analyze</h5>
-                                <p class="text-muted small">Input property details on the left to see the AI prediction and regional trends.</p>
-                            </div>
-                        {% endif %}
-
-                        <div class="chart-container">
-                            <h6 class="fw-bold mb-3">Market Influence Factors</h6>
-                            <canvas id="indianMarketChart" height="200"></canvas>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">TOTAL BUILT-UP AREA (Sq. Ft.)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-vector-square"></i></span>
+                            <input type="number" name="area" class="form-control" placeholder="e.g. 1500" required>
                         </div>
                     </div>
 
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">CONFIGURATION (BHK)</label>
+                        <select name="bhk" class="form-select" required>
+                            <option value="1">1 BHK</option>
+                            <option value="2" selected>2 BHK</option>
+                            <option value="3">3 BHK</option>
+                            <option value="4">4+ BHK</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">PROPERTY AGE (YEARS)</label>
+                        <input type="number" name="age" class="form-control" placeholder="e.g. 2" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">NUMBER OF BATHROOMS</label>
+                        <input type="number" name="bath" class="form-control" placeholder="e.g. 2" required>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-calculate w-100 text-uppercase shadow">Get Instant Valuation</button>
+                    </div>
+                </form>
+
+                {% if prediction_text %}
+                <div class="result-display mt-5 p-4 text-center">
+                    <p class="text-uppercase text-success fw-bold small mb-1">Estimated Market Value</p>
+                    <h1 class="display-4 fw-bold text-dark">{{ prediction_text }}</h1>
+                    <div class="mt-3 text-muted">
+                        <span class="badge bg-white text-dark border me-2">{{ area }} Sq. Ft.</span>
+                        <span class="badge bg-white text-dark border">{{ bhk }} BHK</span>
+                    </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
 
-<footer class="text-center py-4">
-    <div class="container">
-        <p class="text-muted small">
-            Built with <i class="fas fa-heart text-danger"></i> for Indian Homeowners | 
-            <a href="#" class="text-decoration-none ms-2">Powered by Linear Regression</a>
-        </p>
-    </div>
+<footer class="text-center py-5">
+    <p class="text-muted small">© 2026 BharatProperty Predictor | Built with Python Linear Regression</p>
 </footer>
-
-<script>
-    // Localized Chart for Indian Context
-    const ctx = document.getElementById('indianMarketChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Income', 'Age', 'Rooms', 'Pop'],
-            datasets: [{
-                label: '% Influence',
-                data: [42, 18, 25, 15],
-                backgroundColor: ['#1a2a6c', '#b21f1f', '#fdbb2d', '#2ecc71'],
-                borderRadius: 10
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, grid: { display: false } } }
-        }
-    });
-</script>
 
 </body>
 </html>
