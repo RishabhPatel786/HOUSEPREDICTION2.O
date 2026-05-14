@@ -1,5 +1,5 @@
-Area_SqFt,BHK,Age_Years,Bathrooms,Price
-1200,2,5,2,4500000
-1800,3,2,3,8500000
-2500,4,10,4,12000000
-800,1,15,1,2500000
+Area_SqFt,BHK,Age_Years,Bathrooms,Location,Price
+1200,2,5,2,City,5500000
+800,1,10,1,Village,1500000
+1500,3,2,2,Main_Road,7500000
+2000,4,8,3,Outskirts,4500000

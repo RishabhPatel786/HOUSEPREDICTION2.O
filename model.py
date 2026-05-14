@@ -2,17 +2,21 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 import pickle
 
-# Load the updated property-only data
 df = pd.read_csv('housing_data.csv')
 
-# Features: Square Feet, BHK, Age, Bathrooms
-X = df[['Area_SqFt', 'BHK', 'Age_Years', 'Bathrooms']]
-y = df['Price']
+# Convert text locations into numeric columns
+df_encoded = pd.get_dummies(df, columns=['Location'])
+
+# Define Features (X) and Target (y)
+X = df_encoded.drop('Price', axis=1)
+y = df_encoded['Price']
 
 model = LinearRegression()
 model.fit(X, y)
 
-with open('model.pkl', 'wb') as f:
-    pickle.dump(model, f)
+# Save both the model and the column names (needed for prediction)
+model_data = {'model': model, 'columns': X.columns.tolist()}
+with open('model_data.pkl', 'wb') as f:
+    pickle.dump(model_data, f)
 
-print("Property-focused model trained successfully!")
+print("Model trained with Location features!")
