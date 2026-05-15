@@ -84,6 +84,10 @@ def predict():
         print(f"Error: {e}")
         return render_template('index.html', prediction_text="Check Data", old_inputs={})
 
+ # Make sure this is at the top of app.py
+
+# ... your other code ...
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
